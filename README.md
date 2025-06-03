@@ -28,3 +28,7 @@ Runs at [http://localhost:3000](http://localhost:3000)
 * `app/` – routes and layout
 
 
+![image](https://github.com/user-attachments/assets/f98b375e-9dc0-4420-bbf5-50988737c5e5)
+![image](https://github.com/user-attachments/assets/0cf5c032-a6be-424c-8c3c-1c48df4c79e6)
+
+
