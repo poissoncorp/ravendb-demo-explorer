@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { Salesperson, Product, HelpdeskTicket } from "./types"
 
 
-const documentStore = new DocumentStore("http://live-test.ravendb.net", "genai")
+const documentStore = new DocumentStore("http://127.0.0.1:8080", "genai")
 documentStore.initialize()
 
 
@@ -13,16 +13,9 @@ documentStore.initialize()
 export async function getMatchingProducts(query: string): Promise<Product[]> {
   const session = documentStore.openSession()
   try {
-    // // TODO: Replace with actual vector search query
-    // const results = await session
-    //   .query<any>({ collection: "Products" })
-    //   // .whereLucene("Description", `vector:$${query}`) or actual vector logic
-    //   .all()
-      
-    const results = await session
-      .query<Product>({ collection: "Products" })
-  .whereExists("Name")
-  .all()
+    const results = await session.query<Product>({ collection: "Products" })
+          .vectorSearch(x => x.withText("").usingTask("generateembeddingsforproducts"),
+                factory => factory.byText(query), {similarity: 0.6, isExact: true}).all()
       
     const mapped: Product[] = results.map((doc: any) => ({
       id: doc['@metadata']?.['@id'] ?? 'unknown',
@@ -75,14 +68,13 @@ function mapToSalesperson(employeeId: string, rawEmployee: any): Salesperson {
   }
 }
 
-
-
 export async function getMatchingSupportTickets(query: string): Promise<HelpdeskTicket[]> {
   const session = documentStore.openSession()
   try {
     const rawResults = await session
       .query<any>({ collection: "HelpdeskTickets" })
-      // .whereLucene("summary", query) or embedding search logic
+      .vectorSearch(x => x.withText("summary").usingTask("generateembeddingsforsummaries"),
+                factory => factory.byText(query), {similarity: 0.6})
       .all()
 
     return rawResults.map(mapToHelpdeskTicket) 

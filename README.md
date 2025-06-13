@@ -15,8 +15,8 @@ pnpm dev
 
 Runs at [http://localhost:3000](http://localhost:3000)
 
-> Requires a RavenDB database named **genai** at
-> `http://live-test.ravendb.net` (no auth needed)
+> Requires a RavenDB server running on your machine, with database named **genai**
+> `http://127.0.0.1:8080` (unsecured) 
 
 ---
 
